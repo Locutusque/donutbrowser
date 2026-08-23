@@ -1473,3 +1473,106 @@ test("a folder with no manifest fails with the translated reason, not a raw code
     assert.equal((await restoreFolderPicker(app)).length, 1);
   });
 });
+
+const BYPASS = en.proxyBypass;
+
+test("the proxy picker opens a bypass list that validates, tests, and canonicalizes rules", async () => {
+  await withApp("ui-proxy-bypass-list", async (app) => {
+    await app.invoke("create_browser_profile_new", {
+      name: "Bypass Profile",
+      browserStr: "wayfern",
+      version: "150.0.7871.100",
+      releaseType: "stable",
+      proxyId: null,
+      vpnId: null,
+      wayfernConfig: { fingerprint: "{}" },
+      groupId: null,
+      ephemeral: false,
+      dnsBlocklist: null,
+      launchHook: null,
+    });
+    await app.waitForText("Bypass Profile");
+
+    // The entry point under test: the bypass list has to be reachable from the
+    // proxy picker, which is where someone assigning a proxy actually looks.
+    // The cell trigger is a span and the row is a cmdk option, so neither is
+    // reachable through clickText's button/link roles. The tooltip wraps the
+    // popover trigger and overwrites its data-slot, so match the popover by the
+    // aria it still carries.
+    const proxyCell = await app.waitFor(
+      () =>
+        app.execute(
+          `return [...document.querySelectorAll('[aria-haspopup="dialog"]')]
+             .find((node) => node.textContent.trim() === arguments[0]) ?? null;`,
+          [en.profiles.table.notSelected],
+        ),
+      { description: "proxy cell trigger" },
+    );
+    await app.clickElement(proxyCell, "proxy cell");
+    await app.waitForText(en.profileTable.exceptionsHeading);
+    await app.clickText(BYPASS.openFromPicker, { roles: ["option"] });
+    await app.waitForText(BYPASS.description);
+
+    const ruleField = `[aria-label="${BYPASS.ruleInputLabel}"]`;
+    const addButton = async () =>
+      app.execute(
+        `return Array.from(document.querySelectorAll("button"))
+           .find((button) => button.textContent.trim() === arguments[0])?.disabled ?? null;`,
+        [BYPASS.addRule],
+      );
+
+    // An unparsable rule is refused at the input, with the reason rather than
+    // a raw code, and cannot be added at all. Wait on the reason, not on the
+    // disabled button: Add is also disabled while the check is still in flight.
+    await app.fillSelector(ruleField, "10.0.0.0/99");
+    await app.waitForText(
+      BYPASS.errors.invalidCidr.replace("{{rule}}", "10.0.0.0/99"),
+    );
+    assert.equal(
+      await addButton(),
+      true,
+      "Add must stay disabled for an unparsable rule",
+    );
+    assert.ok(
+      !(await app.bodyText()).includes("BYPASS_RULE_INVALID_CIDR"),
+      "a raw backend code reached the user",
+    );
+
+    // A valid rule is labelled with what it will actually match before it is
+    // committed — the ambiguity that made the old list untrustworthy.
+    await app.fillSelector(ruleField, ".Example.COM");
+    await app.waitForText(BYPASS.kinds.subdomains);
+    assert.equal(
+      await addButton(),
+      false,
+      "Add must be enabled once the draft parses",
+    );
+
+    await app.clickText(BYPASS.addRule, { roles: ["button"] });
+    await app.waitFor(
+      async () => {
+        const profile = (await app.invoke("list_browser_profiles")).find(
+          (item) => item.name === "Bypass Profile",
+        );
+        return profile?.proxy_bypass_rules?.length === 1;
+      },
+      { description: "rule persisted" },
+    );
+    const stored = (await app.invoke("list_browser_profiles")).find(
+      (item) => item.name === "Bypass Profile",
+    );
+    // Stored canonicalized, not as typed.
+    assert.deepEqual(stored.proxy_bypass_rules, ["*.example.com"]);
+
+    // The tester answers the question the rule syntax raises: subdomains match,
+    // the apex does not.
+    const testField = `[aria-label="${BYPASS.testTitle}"]`;
+    await app.fillSelector(testField, "https://api.example.com/v1");
+    await app.waitForText(
+      BYPASS.testDirect.replace("{{rule}}", "*.example.com"),
+    );
+
+    await app.fillSelector(testField, "example.com");
+    await app.waitForText(BYPASS.testProxied);
+  });
+});
