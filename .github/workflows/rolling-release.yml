@@ -201,6 +201,10 @@ jobs:
         env:
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
           APPLE_CERTIFICATE_KEY: ${{ secrets.APPLE_CERTIFICATE_KEY }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
           CERT_PATH=$RUNNER_TEMP/cert.cer
           KEY_PATH=$RUNNER_TEMP/cert.key
@@ -239,6 +243,19 @@ jobs:
 
           rm -f $CERT_PATH $KEY_PATH $PEM_PATH $P12_PATH
 
+          # Hand the signing and notarization variables to the build only now,
+          # with an identity actually in the keychain. Setting them on the build
+          # step unconditionally is what broke the unsigned build: an absent
+          # secret still DEFINES the variable as empty, tauri reads that as
+          # "sign with this identity", and `codesign -s ""` reports
+          # "no identity found" after a ten minute compile.
+          {
+            echo "APPLE_SIGNING_IDENTITY=$APPLE_SIGNING_IDENTITY"
+            echo "APPLE_ID=$APPLE_ID"
+            echo "APPLE_PASSWORD=$APPLE_PASSWORD"
+            echo "APPLE_TEAM_ID=$APPLE_TEAM_ID"
+          } >> "$GITHUB_ENV"
+
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@1deb371b0cd8bd54025b384f1cd735e725c4060f #v1.0.0
         env:
@@ -246,10 +263,6 @@ jobs:
           BUILD_TAG: "nightly-${{ steps.timestamp.outputs.timestamp }}"
           GITHUB_REF_NAME: "nightly-${{ steps.timestamp.outputs.timestamp }}"
           GITHUB_SHA: ${{ github.sha }}
-          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           TARGET: ${{ matrix.target }}
           # tauri-action's inner `pnpm tauri build` re-runs beforeBuildCommand
           # which rebuilds dist/ in a subprocess. The env var must be here too.
