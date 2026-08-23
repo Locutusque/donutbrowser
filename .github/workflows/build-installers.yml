@@ -6,9 +6,10 @@ name: Build Installers
 # an installer out of a fork or a feature branch. This one has no such gate, on
 # purpose: it is for testing a branch on real hardware before it merges.
 #
-# Builds are unsigned. The signing secrets live on the upstream repository, and
-# a fork has none, so macOS will refuse the app until Gatekeeper is told
-# otherwise. See the job summary this workflow writes for how.
+# Builds are ad-hoc signed rather than notarized. The signing secrets live on
+# the upstream repository, and a fork has none, so macOS will refuse the first
+# launch until Gatekeeper is told otherwise. See the job summary this workflow
+# writes for how.
 
 on:
   workflow_dispatch:
@@ -99,6 +100,15 @@ jobs:
       - name: Install frontend dependencies
         run: pnpm install --frozen-lockfile
 
+      # This workflow never has a Developer ID certificate, so hand the bundler
+      # codesign's ad-hoc identity. A bundle with no signature at all reads to
+      # Gatekeeper as corrupt: the quarantined download is reported as damaged,
+      # with nothing but Move to Trash on offer. An ad-hoc seal is the
+      # difference between a prompt the user can approve and a dead end.
+      - name: Ad-hoc sign the macOS bundle
+        if: matrix.family == 'macos'
+        run: echo "APPLE_SIGNING_IDENTITY=-" >> "$GITHUB_ENV"
+
       # No tagName, so tauri-action builds without publishing a release. The
       # sidecar build (donut-proxy) and the Xray-core download are handled by
       # the beforeBuildCommand in tauri.conf.json.
@@ -139,11 +149,13 @@ jobs:
             echo "Artifact: \`donut-${{ matrix.target }}\`"
             echo
             if [ "${{ matrix.family }}" = "macos" ]; then
-              echo "Unsigned, and downloaded files are quarantined, so macOS will"
-              echo "report the app as damaged until the attribute is cleared:"
+              echo "Ad-hoc signed rather than notarized, and downloaded files are"
+              echo "quarantined, so macOS blocks the first launch. Approve it under"
+              echo "System Settings > Privacy & Security > Open Anyway, or clear the"
+              echo "attribute:"
               echo
               echo '```'
-              echo 'xattr -dr com.apple.quarantine "/Applications/Donut Browser.app"'
+              echo 'xattr -dr com.apple.quarantine "/Applications/Donut.app"'
               echo '```'
             fi
           } >> "$GITHUB_STEP_SUMMARY"

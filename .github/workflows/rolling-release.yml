@@ -215,12 +215,20 @@ jobs:
           P12_PASSWORD=$(openssl rand -base64 32)
 
           # Without the secrets this decoded an empty file and openssl failed,
-          # killing both macOS jobs before they built anything. Skip instead, so
-          # a repository with no signing identity still produces an (unsigned)
-          # app. The `secrets` context is not readable from a step-level `if`,
-          # which is why the check lives here.
+          # killing both macOS jobs before they built anything. Fall back to an
+          # ad-hoc signature instead. The `secrets` context is not readable from
+          # a step-level `if`, which is why the check lives here.
+          #
+          # "-" is codesign's ad-hoc identity, and it is not cosmetic: a bundle
+          # carrying no signature at all reads to Gatekeeper as corrupt, so a
+          # quarantined download reports "Donut is damaged and can't be opened"
+          # and offers nothing but Move to Trash. An ad-hoc seal downgrades that
+          # to the unidentified-developer prompt, which the user can approve.
+          # APPLE_ID and friends stay unset, which the bundler reads as "skip
+          # notarization".
           if [ -z "$APPLE_CERTIFICATE" ] || [ -z "$APPLE_CERTIFICATE_KEY" ]; then
-            echo "No Apple signing certificate configured; building unsigned."
+            echo "No Apple signing certificate configured; ad-hoc signing."
+            echo "APPLE_SIGNING_IDENTITY=-" >> "$GITHUB_ENV"
             exit 0
           fi
 

@@ -74,6 +74,19 @@ curl -fsSL https://donutbrowser.com/install.sh | sh
 ```
 
 <details>
+<summary>Troubleshooting macOS ("Donut is damaged")</summary>
+
+Builds carry an ad-hoc signature rather than an Apple Developer ID, so macOS quarantines the download and blocks the first launch. Open **System Settings -> Privacy & Security**, scroll to the message about Donut, and choose **Open Anyway**.
+
+Releases up to and including v0.30.1 were not signed at all, which macOS reports as `"Donut" is damaged and can't be opened` with no way past the dialog. Clear the quarantine attribute instead:
+
+```bash
+xattr -dr com.apple.quarantine "/Applications/Donut.app"
+```
+
+</details>
+
+<details>
 <summary>Troubleshooting AppImage</summary>
 
 If the AppImage segfaults on launch, install libfuse2 (`sudo apt install libfuse2` / `yay -S libfuse2` / `sudo dnf install fuse-libs`), or bypass FUSE entirely:
