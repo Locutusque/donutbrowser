@@ -1495,18 +1495,45 @@ test("the proxy picker opens a bypass list that validates, tests, and canonicali
 
     // The entry point under test: the bypass list has to be reachable from the
     // proxy picker, which is where someone assigning a proxy actually looks.
-    // The cell trigger is a span and the row is a cmdk option, so neither is
-    // reachable through clickText's button/link roles. The tooltip wraps the
-    // popover trigger and overwrites its data-slot, so match the popover by the
-    // aria it still carries.
-    const proxyCell = await app.waitFor(
+    // The row is a cmdk option, so it is not reachable through clickText's
+    // button/link roles, and the tooltip wraps the popover trigger and
+    // overwrites its data-slot, so match the popover by the aria it still
+    // carries.
+    const findProxyCell = `const cell = [...document.querySelectorAll('[aria-haspopup="dialog"]')]
+         .find((node) => node.textContent.trim() === arguments[0]);`;
+    await app.waitFor(
       () =>
-        app.execute(
-          `return [...document.querySelectorAll('[aria-haspopup="dialog"]')]
-             .find((node) => node.textContent.trim() === arguments[0]) ?? null;`,
-          [en.profiles.table.notSelected],
-        ),
+        app.execute(`${findProxyCell} return cell ?? null;`, [
+          en.profiles.table.notSelected,
+        ]),
       { description: "proxy cell trigger" },
+    );
+
+    // The picker was a span carrying type="button", which is inert: not in the
+    // tab order and not focusable, so it could not be opened without a mouse.
+    assert.equal(
+      await app.execute(`${findProxyCell} return cell?.tabIndex ?? null;`, [
+        en.profiles.table.notSelected,
+      ]),
+      0,
+      "the proxy picker must be in the tab order",
+    );
+    assert.equal(
+      await app.execute(
+        `${findProxyCell} cell?.focus(); return document.activeElement === cell;`,
+        [en.profiles.table.notSelected],
+      ),
+      true,
+      "the proxy picker must take focus",
+    );
+
+    // Opening is left to a click: the driver does not turn a synthetic Enter
+    // into activation, and a native button's Enter handling is the browser's
+    // behaviour, not this app's. The two assertions above are what the old
+    // markup actually failed.
+    const proxyCell = await app.execute(
+      `${findProxyCell} return cell ?? null;`,
+      [en.profiles.table.notSelected],
     );
     await app.clickElement(proxyCell, "proxy cell");
     await app.waitForText(en.profileTable.exceptionsHeading);

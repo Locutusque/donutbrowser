@@ -980,11 +980,17 @@ const ProxyCellTrigger = React.memo<{
     >
       <TooltipTrigger asChild>
         <PopoverTrigger asChild>
-          <span
+          {/* A real button, like the Note/Ext/DNS cells: a span with
+              `type="button"` is not focusable, so this picker could not be
+              reached by Tab at all. `disabled` also takes it out of the tab
+              order, which `pointer-events-none` did not. */}
+          <button
+            type="button"
+            disabled={isDisabled}
             className={cn(
-              "flex max-w-full min-w-0 items-center gap-2 rounded px-2 py-1",
+              "flex max-w-full min-w-0 items-center gap-2 rounded border-none bg-transparent px-2 py-1 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
               isDisabled
-                ? "pointer-events-none cursor-not-allowed opacity-60"
+                ? "cursor-not-allowed opacity-60"
                 : "cursor-pointer hover:bg-muted",
             )}
           >
@@ -1006,9 +1012,16 @@ const ProxyCellTrigger = React.memo<{
               {displayName}
             </span>
             {bypassCount > 0 && (
-              <LuShieldOff className="size-3 shrink-0 text-muted-foreground" />
+              <>
+                <LuShieldOff className="size-3 shrink-0 text-muted-foreground" />
+                {/* The icon is the only sign that some traffic skips this
+                    proxy; the tooltip carrying that is visual-only. */}
+                <span className="sr-only">
+                  {t("proxyBypass.cellTooltip", { count: bypassCount })}
+                </span>
+              </>
             )}
-          </span>
+          </button>
         </PopoverTrigger>
       </TooltipTrigger>
       {(bypassCount > 0 || (hasAssignment && isOverflowing)) && (
