@@ -811,7 +811,7 @@ impl McpServer {
             "proxy_bypass_rules": {
               "type": "array",
               "items": { "type": "string" },
-              "description": "Proxy bypass rules (replaces existing rules)"
+              "description": "Proxy bypass rules (replaces existing rules). A bare domain covers the domain and its subdomains; see update_profile_proxy_bypass_rules for the full syntax."
             },
             "clear_on_close": {
               "type": "boolean",
@@ -1253,7 +1253,7 @@ impl McpServer {
             "rules": {
               "type": "array",
               "items": { "type": "string" },
-              "description": "Array of bypass rules. Supports hostnames (e.g. 'example.com'), IP addresses, and regex patterns."
+              "description": "Array of bypass rules. A bare domain ('example.com') covers the domain and all of its subdomains; '*.example.com' covers subdomains only. Also accepts globs ('staging-*.example.com'), IP addresses, CIDR ranges ('10.0.0.0/8'), a port ('example.com:8080') or scheme ('https://example.com') suffix, '<local>', '<loopback>', and '/regex/' anchored to the whole host. Rules are stored in canonical form; an unparsable rule is rejected."
             }
           },
           "required": ["profile_id", "rules"]

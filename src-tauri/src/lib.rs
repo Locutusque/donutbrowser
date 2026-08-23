@@ -83,6 +83,7 @@ mod platform_browser;
 mod profile;
 mod profile_import;
 mod profile_importer;
+pub mod proxy_bypass;
 mod proxy_manager;
 pub mod proxy_runner;
 pub mod proxy_server;
@@ -2734,6 +2735,7 @@ pub fn run_with_builder(
       update_stored_proxy,
       delete_stored_proxy,
       check_proxy_validity,
+      proxy_bypass::check_proxy_bypass_rules,
       get_cached_proxy_check,
       export_proxies,
       import_proxies_json,

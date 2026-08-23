@@ -892,7 +892,12 @@ impl ProfileManager {
       .find(|p| p.id == profile_uuid)
       .ok_or_else(|| format!("Profile with ID '{profile_id}' not found"))?;
 
-    profile.proxy_bypass_rules = rules;
+    // The structured form, not prose: the REST layer maps a `{"code": ...}`
+    // validation error onto 400, while unrecognised text falls through to 500.
+    profile.proxy_bypass_rules =
+      crate::proxy_bypass::validate_rules(&rules).map_err(|(rule, error)| {
+        serde_json::json!({ "code": error.code(), "params": { "rule": rule } }).to_string()
+      })?;
     profile.updated_at = Some(crate::proxy_manager::now_secs());
 
     self.save_profile(&profile)?;
@@ -1892,7 +1897,16 @@ pub fn update_profile_proxy_bypass_rules(
   let profile_manager = ProfileManager::instance();
   profile_manager
     .update_profile_proxy_bypass_rules(&app_handle, &profile_id, rules)
-    .map_err(|e| format!("Failed to update proxy bypass rules: {e}"))
+    .map_err(|e| {
+      let message = e.to_string();
+      // A rule the manager could not parse already arrives as a translatable
+      // `{"code": ...}`; only unstructured failures need framing.
+      if message.starts_with('{') {
+        message
+      } else {
+        format!("Failed to update proxy bypass rules: {message}")
+      }
+    })
 }
 
 #[tauri::command]

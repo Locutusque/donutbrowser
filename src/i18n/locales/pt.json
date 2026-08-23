@@ -1157,13 +1157,6 @@
       "unknown": "Desconhecido"
     },
     "network": {
-      "bypassRules": "Regras de Bypass de Proxy",
-      "bypassRulesTitle": "Regras de Bypass de Proxy",
-      "bypassRulesDescription": "Solicitações que correspondam a estas regras se conectarão diretamente, ignorando o proxy.",
-      "addRule": "Adicionar Regra",
-      "rulePlaceholder": "ex. example.com, 192.168.1.*, .*\\.local",
-      "noRules": "Nenhuma regra de bypass configurada.",
-      "ruleTypes": "Suporta nomes de host, endereços IP e padrões regex.",
       "vpnLabel": "VPN: {{name}}",
       "proxyLabel": "Proxy: {{name}}"
     },
@@ -1733,7 +1726,8 @@
     "tagsHeader": "Etiquetas",
     "noteHeader": "Nota",
     "vpnsHeading": "VPNs",
-    "createByCountryHeading": "Criar por país"
+    "createByCountryHeading": "Criar por país",
+    "exceptionsHeading": "Exceções"
   },
   "dataTableActionBar": {
     "selected": "{{count}} selecionado(s)",
@@ -1984,7 +1978,13 @@
     "noE2ePasswordSet": "Nenhuma senha de criptografia de ponta a ponta foi definida. Defina uma antes de sincronizar dados criptografados.",
     "importSourceNotChromium": "Esta pasta não é um perfil de navegador Chromium",
     "importSourceNotChromiumNamed": "Perfis do {{family}} não podem ser importados; apenas navegadores baseados em Chromium são compatíveis",
-    "importSourceBrowserRunning": "Feche o {{browser}} primeiro ou escolha importar mesmo assim"
+    "importSourceBrowserRunning": "Feche o {{browser}} primeiro ou escolha importar mesmo assim",
+    "bypassRuleEmpty": "Informe um nome de host, endereço IP ou faixa.",
+    "bypassRuleInvalidHost": "\"{{rule}}\" não é um nome de host ou padrão válido.",
+    "bypassRuleInvalidPort": "\"{{rule}}\" tem uma porta inválida.",
+    "bypassRuleInvalidCidr": "\"{{rule}}\" não é uma faixa de IP válida.",
+    "bypassRuleInvalidScheme": "\"{{rule}}\" tem um esquema inválido.",
+    "bypassRuleInvalidRegex": "\"{{rule}}\" não é uma expressão regular válida."
   },
   "rail": {
     "profiles": "Perfis",
@@ -2604,5 +2604,52 @@
     "vpnExtensionEntry": " {{version}} — {{capability}}, {{source}}",
     "vpnExtensionEntryNoVersion": " — {{capability}}, {{source}}",
     "scanIncompleteMissing": "Este perfil ainda não foi iniciado, portanto só foi possível verificar as extensões gerenciadas pelo Donut."
+  },
+  "proxyBypass": {
+    "title": "Lista de exceções do proxy",
+    "titleForProfile": "Lista de exceções do proxy — {{name}}",
+    "description": "As solicitações que corresponderem a estas regras se conectam diretamente, sem passar pelo proxy ou VPN deste perfil. Um domínio sozinho abrange o domínio e todos os seus subdomínios.",
+    "rulePlaceholder": "example.com, *.internal, 10.0.0.0/8",
+    "ruleInputLabel": "Regra de exceção",
+    "addRule": "Adicionar",
+    "noRules": "Ainda não há exceções. Todas as solicitações passam pelo proxy deste perfil.",
+    "willAddCount": "Regras a adicionar: {{count}}",
+    "draftMeaning": "{{rule}} — {{meaning}}",
+    "removeRule": "Remover {{rule}}",
+    "testTitle": "Testar um host",
+    "testPlaceholder": "www.example.com",
+    "testDirect": "Conecta diretamente, pela regra {{rule}}",
+    "testProxied": "Passa pelo proxy: nenhuma regra corresponde a este host.",
+    "syntaxTitle": "Padrões suportados",
+    "openFromPicker": "Lista de exceções",
+    "cellTooltip": "Lista de exceções ({{count}})",
+    "kinds": {
+      "domain": "Domínio e subdomínios",
+      "subdomains": "Apenas subdomínios",
+      "wildcard": "Curinga",
+      "ip": "Endereço IP",
+      "cidr": "Faixa de IP",
+      "local": "Hosts locais",
+      "loopback": "Loopback",
+      "regex": "Expressão regular"
+    },
+    "errors": {
+      "empty": "Informe um nome de host, endereço IP ou faixa.",
+      "invalidHost": "\"{{rule}}\" não é um nome de host ou padrão válido.",
+      "invalidPort": "\"{{rule}}\" tem uma porta inválida.",
+      "invalidCidr": "\"{{rule}}\" não é uma faixa de IP válida.",
+      "invalidScheme": "\"{{rule}}\" tem um esquema inválido.",
+      "invalidRegex": "\"{{rule}}\" não é uma expressão regular válida."
+    },
+    "syntax": {
+      "domain": "O domínio e todos os seus subdomínios",
+      "subdomains": "Apenas os subdomínios, não o domínio em si",
+      "ip": "Um endereço IP exato",
+      "cidr": "Todos os endereços da faixa",
+      "port": "O host, mas somente nessa porta",
+      "scheme": "O host, mas somente nesse esquema",
+      "local": "Qualquer host sem ponto, mais o loopback",
+      "regex": "Uma expressão regular, aplicada ao host inteiro"
+    }
   }
 }

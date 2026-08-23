@@ -1154,13 +1154,6 @@
       "unknown": "未知"
     },
     "network": {
-      "bypassRules": "代理绕过规则",
-      "bypassRulesTitle": "代理绕过规则",
-      "bypassRulesDescription": "匹配这些规则的请求将直接连接，绕过代理。",
-      "addRule": "添加规则",
-      "rulePlaceholder": "例如 example.com, 192.168.1.*, .*\\.local",
-      "noRules": "未配置绕过规则。",
-      "ruleTypes": "支持主机名、IP地址和正则表达式模式。",
       "vpnLabel": "VPN：{{name}}",
       "proxyLabel": "代理：{{name}}"
     },
@@ -1726,7 +1719,8 @@
     "tagsHeader": "标签",
     "noteHeader": "备注",
     "vpnsHeading": "VPN",
-    "createByCountryHeading": "按国家创建"
+    "createByCountryHeading": "按国家创建",
+    "exceptionsHeading": "例外"
   },
   "dataTableActionBar": {
     "selected": "已选择 {{count}}",
@@ -1977,7 +1971,13 @@
     "noE2ePasswordSet": "尚未设置端到端加密密码。请先设置后再同步加密数据。",
     "importSourceNotChromium": "该文件夹不是 Chromium 浏览器配置文件",
     "importSourceNotChromiumNamed": "无法导入 {{family}} 配置文件；仅支持基于 Chromium 的浏览器",
-    "importSourceBrowserRunning": "请先关闭 {{browser}}，或选择仍要导入"
+    "importSourceBrowserRunning": "请先关闭 {{browser}}，或选择仍要导入",
+    "bypassRuleEmpty": "请输入主机名、IP 地址或范围。",
+    "bypassRuleInvalidHost": "“{{rule}}”不是有效的主机名或模式。",
+    "bypassRuleInvalidPort": "“{{rule}}”的端口无效。",
+    "bypassRuleInvalidCidr": "“{{rule}}”不是有效的 IP 范围。",
+    "bypassRuleInvalidScheme": "“{{rule}}”的协议无效。",
+    "bypassRuleInvalidRegex": "“{{rule}}”不是有效的正则表达式。"
   },
   "rail": {
     "profiles": "配置文件",
@@ -2575,5 +2575,52 @@
     "vpnExtensionEntry": " {{version}} — {{capability}}、{{source}}",
     "vpnExtensionEntryNoVersion": " — {{capability}}、{{source}}",
     "scanIncompleteMissing": "此配置文件尚未启动过，因此只能检查由 Donut 管理的扩展。"
+  },
+  "proxyBypass": {
+    "title": "代理绕过列表",
+    "titleForProfile": "代理绕过列表 — {{name}}",
+    "description": "匹配这些规则的请求将直接连接，不经过此配置文件的代理或 VPN。只填写域名时，将同时涵盖该域名及其所有子域名。",
+    "rulePlaceholder": "example.com, *.internal, 10.0.0.0/8",
+    "ruleInputLabel": "绕过规则",
+    "addRule": "添加",
+    "noRules": "尚无例外。所有请求都会经过此配置文件的代理。",
+    "willAddCount": "待添加规则：{{count}}",
+    "draftMeaning": "{{rule}} — {{meaning}}",
+    "removeRule": "移除 {{rule}}",
+    "testTitle": "测试主机",
+    "testPlaceholder": "www.example.com",
+    "testDirect": "直接连接，匹配规则 {{rule}}",
+    "testProxied": "经过代理：没有规则匹配此主机。",
+    "syntaxTitle": "支持的模式",
+    "openFromPicker": "绕过列表",
+    "cellTooltip": "绕过列表（{{count}}）",
+    "kinds": {
+      "domain": "域名及子域名",
+      "subdomains": "仅子域名",
+      "wildcard": "通配符",
+      "ip": "IP 地址",
+      "cidr": "IP 范围",
+      "local": "本地主机",
+      "loopback": "回环地址",
+      "regex": "正则表达式"
+    },
+    "errors": {
+      "empty": "请输入主机名、IP 地址或范围。",
+      "invalidHost": "“{{rule}}”不是有效的主机名或模式。",
+      "invalidPort": "“{{rule}}”的端口无效。",
+      "invalidCidr": "“{{rule}}”不是有效的 IP 范围。",
+      "invalidScheme": "“{{rule}}”的协议无效。",
+      "invalidRegex": "“{{rule}}”不是有效的正则表达式。"
+    },
+    "syntax": {
+      "domain": "该域名及其所有子域名",
+      "subdomains": "仅子域名，不含域名本身",
+      "ip": "一个确切的 IP 地址",
+      "cidr": "该范围内的所有地址",
+      "port": "该主机，但仅限该端口",
+      "scheme": "该主机，但仅限该协议",
+      "local": "所有不含点的主机，以及回环地址",
+      "regex": "对整个主机进行匹配的正则表达式"
+    }
   }
 }

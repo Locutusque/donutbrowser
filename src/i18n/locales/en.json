@@ -1154,13 +1154,6 @@
       "unknown": "Unknown"
     },
     "network": {
-      "bypassRules": "Proxy Bypass Rules",
-      "bypassRulesTitle": "Proxy Bypass Rules",
-      "bypassRulesDescription": "Requests matching these rules will connect directly, bypassing the proxy.",
-      "addRule": "Add Rule",
-      "rulePlaceholder": "e.g. example.com, 192.168.1.*, .*\\.local",
-      "noRules": "No bypass rules configured.",
-      "ruleTypes": "Supports hostnames, IP addresses, and regex patterns.",
       "vpnLabel": "VPN: {{name}}",
       "proxyLabel": "Proxy: {{name}}"
     },
@@ -1726,7 +1719,8 @@
     "tagsHeader": "Tags",
     "noteHeader": "Note",
     "vpnsHeading": "VPNs",
-    "createByCountryHeading": "Create by country"
+    "createByCountryHeading": "Create by country",
+    "exceptionsHeading": "Exceptions"
   },
   "dataTableActionBar": {
     "selected": "{{count}} selected",
@@ -1977,7 +1971,13 @@
     "noE2ePasswordSet": "No end-to-end encryption password is set. Set one before syncing encrypted data.",
     "importSourceNotChromium": "This folder is not a Chromium browser profile",
     "importSourceNotChromiumNamed": "{{family}} profiles cannot be imported; only Chromium-based browsers are supported",
-    "importSourceBrowserRunning": "Close {{browser}} first, or choose to import anyway"
+    "importSourceBrowserRunning": "Close {{browser}} first, or choose to import anyway",
+    "bypassRuleEmpty": "Enter a hostname, IP address, or range.",
+    "bypassRuleInvalidHost": "\"{{rule}}\" is not a valid hostname or pattern.",
+    "bypassRuleInvalidPort": "\"{{rule}}\" has an invalid port.",
+    "bypassRuleInvalidCidr": "\"{{rule}}\" is not a valid IP range.",
+    "bypassRuleInvalidScheme": "\"{{rule}}\" has an invalid scheme.",
+    "bypassRuleInvalidRegex": "\"{{rule}}\" is not a valid regular expression."
   },
   "rail": {
     "profiles": "Profiles",
@@ -2575,5 +2575,52 @@
     "vpnExtensionEntry": " {{version}} — {{capability}}, {{source}}",
     "vpnExtensionEntryNoVersion": " — {{capability}}, {{source}}",
     "scanIncompleteMissing": "This profile has not been launched yet, so only Donut-managed extensions could be checked."
+  },
+  "proxyBypass": {
+    "title": "Proxy Bypass List",
+    "titleForProfile": "Proxy Bypass List — {{name}}",
+    "description": "Requests matching these rules connect directly instead of going through this profile's proxy or VPN. A bare domain covers the domain and all of its subdomains.",
+    "rulePlaceholder": "example.com, *.internal, 10.0.0.0/8",
+    "ruleInputLabel": "Bypass rule",
+    "addRule": "Add",
+    "noRules": "No exceptions yet. Every request goes through this profile's proxy.",
+    "willAddCount": "Rules to add: {{count}}",
+    "draftMeaning": "{{rule}} — {{meaning}}",
+    "removeRule": "Remove {{rule}}",
+    "testTitle": "Test a host",
+    "testPlaceholder": "www.example.com",
+    "testDirect": "Connects directly, matched by {{rule}}",
+    "testProxied": "Goes through the proxy — no rule matches this host.",
+    "syntaxTitle": "Supported patterns",
+    "openFromPicker": "Bypass list",
+    "cellTooltip": "Bypass list ({{count}})",
+    "kinds": {
+      "domain": "Domain and subdomains",
+      "subdomains": "Subdomains only",
+      "wildcard": "Wildcard",
+      "ip": "IP address",
+      "cidr": "IP range",
+      "local": "Local hosts",
+      "loopback": "Loopback",
+      "regex": "Regular expression"
+    },
+    "errors": {
+      "empty": "Enter a hostname, IP address, or range.",
+      "invalidHost": "\"{{rule}}\" is not a valid hostname or pattern.",
+      "invalidPort": "\"{{rule}}\" has an invalid port.",
+      "invalidCidr": "\"{{rule}}\" is not a valid IP range.",
+      "invalidScheme": "\"{{rule}}\" has an invalid scheme.",
+      "invalidRegex": "\"{{rule}}\" is not a valid regular expression."
+    },
+    "syntax": {
+      "domain": "The domain and all of its subdomains",
+      "subdomains": "Subdomains only, not the domain itself",
+      "ip": "One exact IP address",
+      "cidr": "Every address in the range",
+      "port": "The host, but only on that port",
+      "scheme": "The host, but only over that scheme",
+      "local": "Any host with no dot in it, plus loopback",
+      "regex": "A regular expression, matched against the whole host"
+    }
   }
 }

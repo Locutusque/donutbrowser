@@ -6,7 +6,6 @@ use hyper::server::conn::http1;
 use hyper::service::service_fn;
 use hyper::{Method, Request, Response, StatusCode};
 use hyper_util::rt::TokioIo;
-use regex_lite::Regex;
 use std::collections::{HashMap, HashSet};
 use std::convert::Infallible;
 use std::io;
@@ -26,35 +25,16 @@ impl<T: AsyncRead + AsyncWrite + Unpin + Send> AsyncStream for T {}
 pub(crate) type BoxedAsyncStream = Box<dyn AsyncStream>;
 use url::Url;
 
-enum CompiledRule {
-  Regex(Regex),
-  Exact(String),
-}
+pub use crate::proxy_bypass::BypassMatcher;
 
-#[derive(Clone)]
-pub struct BypassMatcher {
-  rules: Arc<Vec<CompiledRule>>,
-}
-
-impl BypassMatcher {
-  pub fn new(rules: &[String]) -> Self {
-    let compiled = rules
-      .iter()
-      .map(|rule| match Regex::new(rule) {
-        Ok(re) => CompiledRule::Regex(re),
-        Err(_) => CompiledRule::Exact(rule.clone()),
-      })
-      .collect();
-    Self {
-      rules: Arc::new(compiled),
-    }
-  }
-
-  pub fn should_bypass(&self, host: &str) -> bool {
-    self.rules.iter().any(|rule| match rule {
-      CompiledRule::Regex(re) => re.is_match(host),
-      CompiledRule::Exact(exact) => host == exact,
-    })
+/// Bypass rules can be narrowed to a scheme, but a CONNECT tunnel and a SOCKS5
+/// connection only carry a port. Infer the scheme from the well-known ports and
+/// leave it unknown otherwise, so a narrowed rule never fires on a guess.
+pub(crate) fn scheme_for_port(port: u16) -> Option<&'static str> {
+  match port {
+    80 => Some("http"),
+    443 => Some("https"),
+    _ => None,
   }
 }
 
@@ -1003,7 +983,19 @@ async fn handle_http(
     req.uri().host()
   );
 
-  let should_bypass = bypass_matcher.should_bypass(&domain);
+  let scheme = req.uri().scheme_str();
+  let port = req.uri().port_u16().or(match scheme {
+    Some("http") => Some(80),
+    Some("https") => Some(443),
+    _ => None,
+  });
+  let should_bypass = match bypass_matcher.matching_rule(&domain, port, scheme) {
+    Some(rule) => {
+      log::debug!("[bypass] {domain} matched rule {rule:?}; connecting directly");
+      true
+    }
+    None => false,
+  };
 
   // Handle proxy types that reqwest doesn't support natively
   if !should_bypass {
@@ -1989,7 +1981,19 @@ pub(crate) async fn connect_to_target_via_upstream(
   upstream_url: Option<&str>,
   bypass_matcher: &BypassMatcher,
 ) -> Result<BoxedAsyncStream, Box<dyn std::error::Error>> {
-  let should_bypass = bypass_matcher.should_bypass(target_host);
+  let should_bypass = match bypass_matcher.matching_rule(
+    target_host,
+    Some(target_port),
+    scheme_for_port(target_port),
+  ) {
+    Some(rule) => {
+      log::debug!(
+        "[bypass] {target_host}:{target_port} matched rule {rule:?}; connecting directly"
+      );
+      true
+    }
+    None => false,
+  };
   // Helper: configure outbound TCP to match browser TCP fingerprint
   let configure_tcp = |stream: &TcpStream| {
     let _ = stream.set_nodelay(true);

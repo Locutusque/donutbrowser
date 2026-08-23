@@ -72,6 +72,7 @@ export const commandCoverage = {
       "update_stored_proxy",
       "delete_stored_proxy",
       "check_proxy_validity",
+      "proxy_bypass::check_proxy_bypass_rules",
       "validate_vless_uri",
       "get_cached_proxy_check",
       "export_proxies",
