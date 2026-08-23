@@ -1,6 +1,13 @@
 # Changelog
 
 
+## v0.30.1 (2026-08-23)
+
+### Maintenance
+
+- chore(release): 0.30.1
+
+
 ## v0.29.5 (2026-08-16)
 
 ### Features
