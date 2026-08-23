@@ -204,6 +204,16 @@ jobs:
           KEYCHAIN_PASSWORD=$(openssl rand -base64 32)
           P12_PASSWORD=$(openssl rand -base64 32)
 
+          # Without the secrets this decoded an empty file and openssl failed,
+          # killing both macOS jobs before they built anything. Skip instead, so
+          # a repository with no signing identity still produces an (unsigned)
+          # app. The `secrets` context is not readable from a step-level `if`,
+          # which is why the check lives here.
+          if [ -z "$APPLE_CERTIFICATE" ] || [ -z "$APPLE_CERTIFICATE_KEY" ]; then
+            echo "No Apple signing certificate configured; building unsigned."
+            exit 0
+          fi
+
           echo "$APPLE_CERTIFICATE" | base64 --decode > $CERT_PATH
           echo "$APPLE_CERTIFICATE_KEY" | base64 --decode > $KEY_PATH
 
