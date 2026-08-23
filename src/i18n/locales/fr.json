@@ -1157,13 +1157,6 @@
       "unknown": "Inconnu"
     },
     "network": {
-      "bypassRules": "Règles de Contournement du Proxy",
-      "bypassRulesTitle": "Règles de Contournement du Proxy",
-      "bypassRulesDescription": "Les requêtes correspondant à ces règles se connecteront directement, contournant le proxy.",
-      "addRule": "Ajouter une Règle",
-      "rulePlaceholder": "ex. example.com, 192.168.1.*, .*\\.local",
-      "noRules": "Aucune règle de contournement configurée.",
-      "ruleTypes": "Prend en charge les noms d'hôte, les adresses IP et les expressions régulières.",
       "vpnLabel": "VPN : {{name}}",
       "proxyLabel": "Proxy : {{name}}"
     },
@@ -1733,7 +1726,8 @@
     "tagsHeader": "Étiquettes",
     "noteHeader": "Note",
     "vpnsHeading": "VPN",
-    "createByCountryHeading": "Créer par pays"
+    "createByCountryHeading": "Créer par pays",
+    "exceptionsHeading": "Exceptions"
   },
   "dataTableActionBar": {
     "selected": "{{count}} sélectionné(s)",
@@ -1984,7 +1978,13 @@
     "noE2ePasswordSet": "Aucun mot de passe de chiffrement de bout en bout n'est défini. Définissez-en un avant de synchroniser des données chiffrées.",
     "importSourceNotChromium": "Ce dossier n'est pas un profil de navigateur Chromium",
     "importSourceNotChromiumNamed": "Les profils {{family}} ne peuvent pas être importés ; seuls les navigateurs basés sur Chromium sont pris en charge",
-    "importSourceBrowserRunning": "Fermez d'abord {{browser}}, ou choisissez d'importer quand même"
+    "importSourceBrowserRunning": "Fermez d'abord {{browser}}, ou choisissez d'importer quand même",
+    "bypassRuleEmpty": "Saisissez un nom d'hôte, une adresse IP ou une plage.",
+    "bypassRuleInvalidHost": "« {{rule}} » n'est pas un nom d'hôte ni un motif valide.",
+    "bypassRuleInvalidPort": "« {{rule}} » contient un port invalide.",
+    "bypassRuleInvalidCidr": "« {{rule}} » n'est pas une plage d'IP valide.",
+    "bypassRuleInvalidScheme": "« {{rule}} » contient un schéma invalide.",
+    "bypassRuleInvalidRegex": "« {{rule}} » n'est pas une expression régulière valide."
   },
   "rail": {
     "profiles": "Profils",
@@ -2604,5 +2604,52 @@
     "vpnExtensionEntry": " {{version}} — {{capability}}, {{source}}",
     "vpnExtensionEntryNoVersion": " — {{capability}}, {{source}}",
     "scanIncompleteMissing": "Ce profil n'a jamais été lancé : seules les extensions gérées par Donut ont pu être vérifiées."
+  },
+  "proxyBypass": {
+    "title": "Liste d'exceptions du proxy",
+    "titleForProfile": "Liste d'exceptions du proxy — {{name}}",
+    "description": "Les requêtes correspondant à ces règles se connectent directement au lieu de passer par le proxy ou le VPN de ce profil. Un domaine seul couvre le domaine et tous ses sous-domaines.",
+    "rulePlaceholder": "example.com, *.internal, 10.0.0.0/8",
+    "ruleInputLabel": "Règle d'exception",
+    "addRule": "Ajouter",
+    "noRules": "Aucune exception pour l'instant. Toutes les requêtes passent par le proxy de ce profil.",
+    "willAddCount": "Règles à ajouter : {{count}}",
+    "draftMeaning": "{{rule}} — {{meaning}}",
+    "removeRule": "Supprimer {{rule}}",
+    "testTitle": "Tester un hôte",
+    "testPlaceholder": "www.example.com",
+    "testDirect": "Se connecte directement, selon la règle {{rule}}",
+    "testProxied": "Passe par le proxy : aucune règle ne correspond à cet hôte.",
+    "syntaxTitle": "Motifs pris en charge",
+    "openFromPicker": "Liste d'exceptions",
+    "cellTooltip": "Liste d'exceptions ({{count}})",
+    "kinds": {
+      "domain": "Domaine et sous-domaines",
+      "subdomains": "Sous-domaines uniquement",
+      "wildcard": "Joker",
+      "ip": "Adresse IP",
+      "cidr": "Plage d'IP",
+      "local": "Hôtes locaux",
+      "loopback": "Boucle locale",
+      "regex": "Expression régulière"
+    },
+    "errors": {
+      "empty": "Saisissez un nom d'hôte, une adresse IP ou une plage.",
+      "invalidHost": "« {{rule}} » n'est pas un nom d'hôte ni un motif valide.",
+      "invalidPort": "« {{rule}} » contient un port invalide.",
+      "invalidCidr": "« {{rule}} » n'est pas une plage d'IP valide.",
+      "invalidScheme": "« {{rule}} » contient un schéma invalide.",
+      "invalidRegex": "« {{rule}} » n'est pas une expression régulière valide."
+    },
+    "syntax": {
+      "domain": "Le domaine et tous ses sous-domaines",
+      "subdomains": "Uniquement les sous-domaines, pas le domaine lui-même",
+      "ip": "Une adresse IP exacte",
+      "cidr": "Toutes les adresses de la plage",
+      "port": "L'hôte, mais uniquement sur ce port",
+      "scheme": "L'hôte, mais uniquement avec ce schéma",
+      "local": "Tout hôte sans point, ainsi que la boucle locale",
+      "regex": "Une expression régulière, appliquée à l'hôte entier"
+    }
   }
 }

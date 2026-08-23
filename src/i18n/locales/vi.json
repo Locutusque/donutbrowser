@@ -1154,13 +1154,6 @@
       "unknown": "Không rõ"
     },
     "network": {
-      "bypassRules": "Quy tắc bỏ qua proxy",
-      "bypassRulesTitle": "Quy tắc bỏ qua proxy",
-      "bypassRulesDescription": "Yêu cầu khớp với các quy tắc này sẽ kết nối trực tiếp, bỏ qua proxy.",
-      "addRule": "Thêm quy tắc",
-      "rulePlaceholder": "ví dụ: example.com, 192.168.1.*, .*\\.local",
-      "noRules": "Chưa cấu hình quy tắc bỏ qua nào.",
-      "ruleTypes": "Hỗ trợ tên máy chủ, địa chỉ IP và biểu thức chính quy.",
       "vpnLabel": "VPN: {{name}}",
       "proxyLabel": "Proxy: {{name}}"
     },
@@ -1726,7 +1719,8 @@
     "tagsHeader": "Thẻ",
     "noteHeader": "Ghi chú",
     "vpnsHeading": "VPN",
-    "createByCountryHeading": "Tạo theo quốc gia"
+    "createByCountryHeading": "Tạo theo quốc gia",
+    "exceptionsHeading": "Ngoại lệ"
   },
   "dataTableActionBar": {
     "selected": "Đã chọn {{count}}",
@@ -1977,7 +1971,13 @@
     "noE2ePasswordSet": "Chưa đặt mật khẩu mã hóa đầu cuối. Hãy đặt trước khi đồng bộ dữ liệu đã mã hóa.",
     "importSourceNotChromium": "Thư mục này không phải hồ sơ trình duyệt Chromium",
     "importSourceNotChromiumNamed": "Không thể nhập hồ sơ {{family}}; chỉ hỗ trợ các trình duyệt nền Chromium",
-    "importSourceBrowserRunning": "Hãy đóng {{browser}} trước, hoặc chọn vẫn nhập"
+    "importSourceBrowserRunning": "Hãy đóng {{browser}} trước, hoặc chọn vẫn nhập",
+    "bypassRuleEmpty": "Hãy nhập tên máy chủ, địa chỉ IP hoặc dải IP.",
+    "bypassRuleInvalidHost": "\"{{rule}}\" không phải là tên máy chủ hoặc mẫu hợp lệ.",
+    "bypassRuleInvalidPort": "\"{{rule}}\" có cổng không hợp lệ.",
+    "bypassRuleInvalidCidr": "\"{{rule}}\" không phải là dải IP hợp lệ.",
+    "bypassRuleInvalidScheme": "\"{{rule}}\" có lược đồ không hợp lệ.",
+    "bypassRuleInvalidRegex": "\"{{rule}}\" không phải là biểu thức chính quy hợp lệ."
   },
   "rail": {
     "profiles": "Profile",
@@ -2575,5 +2575,52 @@
     "vpnExtensionEntry": " {{version}} — {{capability}}, {{source}}",
     "vpnExtensionEntryNoVersion": " — {{capability}}, {{source}}",
     "scanIncompleteMissing": "Hồ sơ này chưa từng được khởi chạy nên chỉ có thể kiểm tra các tiện ích do Donut quản lý."
+  },
+  "proxyBypass": {
+    "title": "Danh sách bỏ qua proxy",
+    "titleForProfile": "Danh sách bỏ qua proxy — {{name}}",
+    "description": "Các yêu cầu khớp với những quy tắc này sẽ kết nối trực tiếp thay vì đi qua proxy hoặc VPN của hồ sơ này. Một tên miền đơn thuần bao gồm cả tên miền đó và mọi tên miền phụ của nó.",
+    "rulePlaceholder": "example.com, *.internal, 10.0.0.0/8",
+    "ruleInputLabel": "Quy tắc bỏ qua",
+    "addRule": "Thêm",
+    "noRules": "Chưa có ngoại lệ nào. Mọi yêu cầu đều đi qua proxy của hồ sơ này.",
+    "willAddCount": "Số quy tắc sẽ thêm: {{count}}",
+    "draftMeaning": "{{rule}} — {{meaning}}",
+    "removeRule": "Xóa {{rule}}",
+    "testTitle": "Kiểm tra một máy chủ",
+    "testPlaceholder": "www.example.com",
+    "testDirect": "Kết nối trực tiếp, khớp với quy tắc {{rule}}",
+    "testProxied": "Đi qua proxy: không có quy tắc nào khớp với máy chủ này.",
+    "syntaxTitle": "Các mẫu được hỗ trợ",
+    "openFromPicker": "Danh sách bỏ qua",
+    "cellTooltip": "Danh sách bỏ qua ({{count}})",
+    "kinds": {
+      "domain": "Tên miền và tên miền phụ",
+      "subdomains": "Chỉ tên miền phụ",
+      "wildcard": "Ký tự đại diện",
+      "ip": "Địa chỉ IP",
+      "cidr": "Dải IP",
+      "local": "Máy chủ cục bộ",
+      "loopback": "Loopback",
+      "regex": "Biểu thức chính quy"
+    },
+    "errors": {
+      "empty": "Hãy nhập tên máy chủ, địa chỉ IP hoặc dải IP.",
+      "invalidHost": "\"{{rule}}\" không phải là tên máy chủ hoặc mẫu hợp lệ.",
+      "invalidPort": "\"{{rule}}\" có cổng không hợp lệ.",
+      "invalidCidr": "\"{{rule}}\" không phải là dải IP hợp lệ.",
+      "invalidScheme": "\"{{rule}}\" có lược đồ không hợp lệ.",
+      "invalidRegex": "\"{{rule}}\" không phải là biểu thức chính quy hợp lệ."
+    },
+    "syntax": {
+      "domain": "Tên miền và tất cả tên miền phụ của nó",
+      "subdomains": "Chỉ tên miền phụ, không gồm chính tên miền",
+      "ip": "Đúng một địa chỉ IP",
+      "cidr": "Mọi địa chỉ trong dải",
+      "port": "Máy chủ đó, nhưng chỉ trên cổng đó",
+      "scheme": "Máy chủ đó, nhưng chỉ với lược đồ đó",
+      "local": "Mọi máy chủ không có dấu chấm, cùng với loopback",
+      "regex": "Một biểu thức chính quy, khớp với toàn bộ tên máy chủ"
+    }
   }
 }

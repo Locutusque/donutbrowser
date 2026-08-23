@@ -206,10 +206,31 @@ test("profile, group, proxy, tag, metadata, clone, and bulk-delete lifecycle", a
         launchHook: "file:///etc/passwd",
       });
       assert.match(invalidHook, /INVALID_LAUNCH_HOOK_URL/);
+      // Messy on purpose: the backend lowercases, rewrites the leading-dot
+      // form to `*.`, and drops the duplicate before storing.
       await app.invoke("update_profile_proxy_bypass_rules", {
         profileId: profile.id,
-        rules: ["localhost", "*.internal.example"],
+        rules: ["LOCALHOST", ".internal.example", "localhost"],
       });
+      const invalidRule = await app.invokeError(
+        "update_profile_proxy_bypass_rules",
+        { profileId: profile.id, rules: ["10.0.0.0/99"] },
+      );
+      assert.match(invalidRule, /BYPASS_RULE_INVALID_CIDR/);
+
+      const bypassReport = await app.invoke("check_proxy_bypass_rules", {
+        rules: ["*.internal.example", "10.0.0.0/8", "not a host"],
+        target: "https://api.internal.example/v1",
+      });
+      assert.deepEqual(
+        bypassReport.map((entry) => entry.kind),
+        ["subdomains", "cidr", null],
+      );
+      assert.deepEqual(
+        bypassReport.map((entry) => entry.matches_target),
+        [true, false, null],
+      );
+      assert.equal(bypassReport[2].error_code, "BYPASS_RULE_INVALID_HOST");
       await app.invoke("update_profile_dns_blocklist", {
         profileId: profile.id,
         dnsBlocklist: "light",
@@ -229,6 +250,7 @@ test("profile, group, proxy, tag, metadata, clone, and bulk-delete lifecycle", a
         "localhost",
         "*.internal.example",
       ]);
+
       assert.equal(changed.dns_blocklist, "light");
       assert.equal(changed.clear_on_close, true);
       assert.deepEqual((await app.invoke("get_all_tags")).sort(), [

@@ -1160,13 +1160,6 @@
       "unknown": "Неизвестно"
     },
     "network": {
-      "bypassRules": "Правила обхода прокси",
-      "bypassRulesTitle": "Правила обхода прокси",
-      "bypassRulesDescription": "Запросы, соответствующие этим правилам, будут подключаться напрямую, минуя прокси.",
-      "addRule": "Добавить правило",
-      "rulePlaceholder": "напр. example.com, 192.168.1.*, .*\\.local",
-      "noRules": "Правила обхода не настроены.",
-      "ruleTypes": "Поддерживает имена хостов, IP-адреса и шаблоны регулярных выражений.",
       "vpnLabel": "VPN: {{name}}",
       "proxyLabel": "Proxy: {{name}}"
     },
@@ -1740,7 +1733,8 @@
     "tagsHeader": "Теги",
     "noteHeader": "Заметка",
     "vpnsHeading": "VPN",
-    "createByCountryHeading": "Создать по стране"
+    "createByCountryHeading": "Создать по стране",
+    "exceptionsHeading": "Исключения"
   },
   "dataTableActionBar": {
     "selected": "Выбрано: {{count}}",
@@ -1991,7 +1985,13 @@
     "noE2ePasswordSet": "Пароль сквозного шифрования не задан. Задайте его перед синхронизацией зашифрованных данных.",
     "importSourceNotChromium": "Эта папка не является профилем браузера на Chromium",
     "importSourceNotChromiumNamed": "Профили {{family}} импортировать нельзя: поддерживаются только браузеры на Chromium",
-    "importSourceBrowserRunning": "Сначала закройте {{browser}} или выберите импорт всё равно"
+    "importSourceBrowserRunning": "Сначала закройте {{browser}} или выберите импорт всё равно",
+    "bypassRuleEmpty": "Введите имя хоста, IP-адрес или диапазон.",
+    "bypassRuleInvalidHost": "«{{rule}}» не является допустимым именем хоста или шаблоном.",
+    "bypassRuleInvalidPort": "В «{{rule}}» указан недопустимый порт.",
+    "bypassRuleInvalidCidr": "«{{rule}}» не является допустимым диапазоном IP.",
+    "bypassRuleInvalidScheme": "В «{{rule}}» указана недопустимая схема.",
+    "bypassRuleInvalidRegex": "«{{rule}}» не является допустимым регулярным выражением."
   },
   "rail": {
     "profiles": "Профили",
@@ -2633,5 +2633,52 @@
     "vpnExtensionEntry": " {{version}} — {{capability}}, {{source}}",
     "vpnExtensionEntryNoVersion": " — {{capability}}, {{source}}",
     "scanIncompleteMissing": "Профиль ещё ни разу не запускался, поэтому удалось проверить только расширения, управляемые Donut."
+  },
+  "proxyBypass": {
+    "title": "Список исключений прокси",
+    "titleForProfile": "Список исключений прокси — {{name}}",
+    "description": "Запросы, соответствующие этим правилам, подключаются напрямую, минуя прокси или VPN этого профиля. Домен без префикса охватывает сам домен и все его поддомены.",
+    "rulePlaceholder": "example.com, *.internal, 10.0.0.0/8",
+    "ruleInputLabel": "Правило исключения",
+    "addRule": "Добавить",
+    "noRules": "Исключений пока нет. Все запросы идут через прокси этого профиля.",
+    "willAddCount": "Правил к добавлению: {{count}}",
+    "draftMeaning": "{{rule}} — {{meaning}}",
+    "removeRule": "Удалить {{rule}}",
+    "testTitle": "Проверить хост",
+    "testPlaceholder": "www.example.com",
+    "testDirect": "Подключается напрямую по правилу {{rule}}",
+    "testProxied": "Идёт через прокси: ни одно правило не подходит для этого хоста.",
+    "syntaxTitle": "Поддерживаемые шаблоны",
+    "openFromPicker": "Список исключений",
+    "cellTooltip": "Список исключений ({{count}})",
+    "kinds": {
+      "domain": "Домен и поддомены",
+      "subdomains": "Только поддомены",
+      "wildcard": "Шаблон",
+      "ip": "IP-адрес",
+      "cidr": "Диапазон IP",
+      "local": "Локальные хосты",
+      "loopback": "Локальная петля",
+      "regex": "Регулярное выражение"
+    },
+    "errors": {
+      "empty": "Введите имя хоста, IP-адрес или диапазон.",
+      "invalidHost": "«{{rule}}» не является допустимым именем хоста или шаблоном.",
+      "invalidPort": "В «{{rule}}» указан недопустимый порт.",
+      "invalidCidr": "«{{rule}}» не является допустимым диапазоном IP.",
+      "invalidScheme": "В «{{rule}}» указана недопустимая схема.",
+      "invalidRegex": "«{{rule}}» не является допустимым регулярным выражением."
+    },
+    "syntax": {
+      "domain": "Домен и все его поддомены",
+      "subdomains": "Только поддомены, без самого домена",
+      "ip": "Один конкретный IP-адрес",
+      "cidr": "Все адреса из диапазона",
+      "port": "Этот хост, но только на этом порту",
+      "scheme": "Этот хост, но только по этой схеме",
+      "local": "Любой хост без точки, а также локальная петля",
+      "regex": "Регулярное выражение, применяемое ко всему хосту"
+    }
   }
 }

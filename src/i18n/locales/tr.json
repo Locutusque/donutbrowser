@@ -1154,13 +1154,6 @@
       "unknown": "Bilinmiyor"
     },
     "network": {
-      "bypassRules": "Proxy Atlama Kuralları",
-      "bypassRulesTitle": "Proxy Atlama Kuralları",
-      "bypassRulesDescription": "Bu kurallarla eşleşen istekler, proxy'yi atlayarak doğrudan bağlanır.",
-      "addRule": "Kural Ekle",
-      "rulePlaceholder": "örn. example.com, 192.168.1.*, .*\\.local",
-      "noRules": "Yapılandırılmış atlama kuralı yok.",
-      "ruleTypes": "Alan adları, IP adresleri ve regex desenleri desteklenir.",
       "vpnLabel": "VPN: {{name}}",
       "proxyLabel": "Proxy: {{name}}"
     },
@@ -1726,7 +1719,8 @@
     "tagsHeader": "Etiketler",
     "noteHeader": "Not",
     "vpnsHeading": "VPN'ler",
-    "createByCountryHeading": "Ülkeye göre oluştur"
+    "createByCountryHeading": "Ülkeye göre oluştur",
+    "exceptionsHeading": "İstisnalar"
   },
   "dataTableActionBar": {
     "selected": "{{count}} seçildi",
@@ -1977,7 +1971,13 @@
     "noE2ePasswordSet": "Uçtan uca şifreleme parolası ayarlanmamış. Şifreli veriyi eşitlemeden önce bir parola belirleyin.",
     "importSourceNotChromium": "Bu klasör bir Chromium tarayıcı profili değil",
     "importSourceNotChromiumNamed": "{{family}} profilleri içe aktarılamaz; yalnızca Chromium tabanlı tarayıcılar desteklenir",
-    "importSourceBrowserRunning": "Önce {{browser}} uygulamasını kapatın veya yine de içe aktarmayı seçin"
+    "importSourceBrowserRunning": "Önce {{browser}} uygulamasını kapatın veya yine de içe aktarmayı seçin",
+    "bypassRuleEmpty": "Bir ana makine adı, IP adresi veya aralık girin.",
+    "bypassRuleInvalidHost": "\"{{rule}}\" geçerli bir ana makine adı veya desen değil.",
+    "bypassRuleInvalidPort": "\"{{rule}}\" geçersiz bir bağlantı noktası içeriyor.",
+    "bypassRuleInvalidCidr": "\"{{rule}}\" geçerli bir IP aralığı değil.",
+    "bypassRuleInvalidScheme": "\"{{rule}}\" geçersiz bir şema içeriyor.",
+    "bypassRuleInvalidRegex": "\"{{rule}}\" geçerli bir düzenli ifade değil."
   },
   "rail": {
     "profiles": "Profiller",
@@ -2575,5 +2575,52 @@
     "vpnExtensionEntry": " {{version}} — {{capability}}, {{source}}",
     "vpnExtensionEntryNoVersion": " — {{capability}}, {{source}}",
     "scanIncompleteMissing": "Bu profil henüz başlatılmadığından yalnızca Donut tarafından yönetilen uzantılar denetlenebildi."
+  },
+  "proxyBypass": {
+    "title": "Proxy Atlama Listesi",
+    "titleForProfile": "Proxy Atlama Listesi — {{name}}",
+    "description": "Bu kurallarla eşleşen istekler, bu profilin proxy'si veya VPN'i üzerinden geçmek yerine doğrudan bağlanır. Yalnızca alan adı yazmak, alan adını ve tüm alt alan adlarını kapsar.",
+    "rulePlaceholder": "example.com, *.internal, 10.0.0.0/8",
+    "ruleInputLabel": "Atlama kuralı",
+    "addRule": "Ekle",
+    "noRules": "Henüz istisna yok. Tüm istekler bu profilin proxy'si üzerinden geçiyor.",
+    "willAddCount": "Eklenecek kural: {{count}}",
+    "draftMeaning": "{{rule}} — {{meaning}}",
+    "removeRule": "{{rule}} kuralını kaldır",
+    "testTitle": "Bir ana makineyi test et",
+    "testPlaceholder": "www.example.com",
+    "testDirect": "Doğrudan bağlanıyor, eşleşen kural: {{rule}}",
+    "testProxied": "Proxy üzerinden geçiyor: bu ana makineyle eşleşen kural yok.",
+    "syntaxTitle": "Desteklenen desenler",
+    "openFromPicker": "Atlama listesi",
+    "cellTooltip": "Atlama listesi ({{count}})",
+    "kinds": {
+      "domain": "Alan adı ve alt alan adları",
+      "subdomains": "Yalnızca alt alan adları",
+      "wildcard": "Joker karakter",
+      "ip": "IP adresi",
+      "cidr": "IP aralığı",
+      "local": "Yerel ana makineler",
+      "loopback": "Geri döngü",
+      "regex": "Düzenli ifade"
+    },
+    "errors": {
+      "empty": "Bir ana makine adı, IP adresi veya aralık girin.",
+      "invalidHost": "\"{{rule}}\" geçerli bir ana makine adı veya desen değil.",
+      "invalidPort": "\"{{rule}}\" geçersiz bir bağlantı noktası içeriyor.",
+      "invalidCidr": "\"{{rule}}\" geçerli bir IP aralığı değil.",
+      "invalidScheme": "\"{{rule}}\" geçersiz bir şema içeriyor.",
+      "invalidRegex": "\"{{rule}}\" geçerli bir düzenli ifade değil."
+    },
+    "syntax": {
+      "domain": "Alan adı ve tüm alt alan adları",
+      "subdomains": "Yalnızca alt alan adları, alan adının kendisi değil",
+      "ip": "Tam olarak bir IP adresi",
+      "cidr": "Aralıktaki tüm adresler",
+      "port": "Bu ana makine, ancak yalnızca o bağlantı noktasında",
+      "scheme": "Bu ana makine, ancak yalnızca o şemayla",
+      "local": "Nokta içermeyen tüm ana makineler ve geri döngü",
+      "regex": "Ana makinenin tamamıyla eşleştirilen bir düzenli ifade"
+    }
   }
 }

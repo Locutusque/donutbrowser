@@ -4,6 +4,14 @@ import path from "node:path";
 import { WebDriverClient } from "./webdriver.mjs";
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+// Keys WebDriver addresses by code point rather than by name. Passing the name
+// through unmapped types it out one letter at a time, which looks like the key
+// silently doing nothing. https://www.w3.org/TR/webdriver/#keyboard-actions
+const NAMED_KEYS = {
+  Enter: "\uE007",
+  Escape: "\uE00C",
+  Tab: "\uE004",
+};
 const MAX_DIAGNOSTIC_BYTES = 20 * 1024 * 1024;
 const PNG_SIGNATURE = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
 
@@ -506,7 +514,9 @@ export class AppSession {
       ...(alt ? ["\uE00A"] : []),
       ...(shift ? ["\uE008"] : []),
     ];
-    const value = key === "Escape" ? "\uE00C" : key;
+    // WebDriver takes named keys as code points; sent as their own name they
+    // would be typed letter by letter instead.
+    const value = NAMED_KEYS[key] ?? key;
     const actions = [
       ...modifiers.map((modifier) => ({ type: "keyDown", value: modifier })),
       { type: "keyDown", value },

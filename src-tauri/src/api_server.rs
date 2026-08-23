@@ -149,6 +149,12 @@ pub struct UpdateProfileRequest {
   pub group_id: Option<String>,
   pub tags: Option<Vec<String>>,
   pub extension_group_id: Option<String>,
+  /// Hosts this profile reaches directly instead of through its proxy or VPN.
+  /// A bare domain (`example.com`) covers the domain and all of its
+  /// subdomains; `*.example.com` covers subdomains only. Globs, IP addresses,
+  /// CIDR ranges, a `:port` or `scheme://` narrowing, `<local>`, `<loopback>`
+  /// and `/regex/` are also accepted. Rules are stored canonicalized and
+  /// deduplicated; an unparsable rule is rejected (400).
   pub proxy_bypass_rules: Option<Vec<String>>,
   /// One of "Disabled", "Regular", "Encrypted".
   pub sync_mode: Option<String>,

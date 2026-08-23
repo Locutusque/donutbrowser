@@ -1154,13 +1154,6 @@
       "unknown": "不明"
     },
     "network": {
-      "bypassRules": "プロキシバイパスルール",
-      "bypassRulesTitle": "プロキシバイパスルール",
-      "bypassRulesDescription": "これらのルールに一致するリクエストは、プロキシをバイパスして直接接続します。",
-      "addRule": "ルールを追加",
-      "rulePlaceholder": "例: example.com, 192.168.1.*, .*\\.local",
-      "noRules": "バイパスルールは設定されていません。",
-      "ruleTypes": "ホスト名、IPアドレス、正規表現パターンをサポートしています。",
       "vpnLabel": "VPN: {{name}}",
       "proxyLabel": "Proxy: {{name}}"
     },
@@ -1726,7 +1719,8 @@
     "tagsHeader": "タグ",
     "noteHeader": "メモ",
     "vpnsHeading": "VPN",
-    "createByCountryHeading": "国別に作成"
+    "createByCountryHeading": "国別に作成",
+    "exceptionsHeading": "除外"
   },
   "dataTableActionBar": {
     "selected": "{{count}} 件選択",
@@ -1977,7 +1971,13 @@
     "noE2ePasswordSet": "エンドツーエンド暗号化のパスワードが設定されていません。暗号化データを同期する前に設定してください。",
     "importSourceNotChromium": "このフォルダーは Chromium ブラウザーのプロファイルではありません",
     "importSourceNotChromiumNamed": "{{family}} のプロファイルはインポートできません。Chromium 系ブラウザーのみ対応しています",
-    "importSourceBrowserRunning": "先に {{browser}} を閉じるか、このままインポートを選択してください"
+    "importSourceBrowserRunning": "先に {{browser}} を閉じるか、このままインポートを選択してください",
+    "bypassRuleEmpty": "ホスト名、IP アドレス、または範囲を入力してください。",
+    "bypassRuleInvalidHost": "「{{rule}}」は有効なホスト名またはパターンではありません。",
+    "bypassRuleInvalidPort": "「{{rule}}」のポートが無効です。",
+    "bypassRuleInvalidCidr": "「{{rule}}」は有効な IP 範囲ではありません。",
+    "bypassRuleInvalidScheme": "「{{rule}}」のスキームが無効です。",
+    "bypassRuleInvalidRegex": "「{{rule}}」は有効な正規表現ではありません。"
   },
   "rail": {
     "profiles": "プロファイル",
@@ -2575,5 +2575,52 @@
     "vpnExtensionEntry": " {{version}}（{{capability}}、{{source}}）",
     "vpnExtensionEntryNoVersion": "（{{capability}}、{{source}}）",
     "scanIncompleteMissing": "このプロファイルはまだ起動されていないため、Donutが管理する拡張機能のみ確認できました。"
+  },
+  "proxyBypass": {
+    "title": "プロキシ除外リスト",
+    "titleForProfile": "プロキシ除外リスト — {{name}}",
+    "description": "これらのルールに一致するリクエストは、このプロファイルのプロキシや VPN を経由せず直接接続します。ドメインだけを指定すると、そのドメインとすべてのサブドメインが対象になります。",
+    "rulePlaceholder": "example.com, *.internal, 10.0.0.0/8",
+    "ruleInputLabel": "除外ルール",
+    "addRule": "追加",
+    "noRules": "除外はまだありません。すべてのリクエストがこのプロファイルのプロキシを経由します。",
+    "willAddCount": "追加するルール: {{count}}",
+    "draftMeaning": "{{rule}} — {{meaning}}",
+    "removeRule": "{{rule}} を削除",
+    "testTitle": "ホストをテスト",
+    "testPlaceholder": "www.example.com",
+    "testDirect": "直接接続します（一致したルール: {{rule}}）",
+    "testProxied": "プロキシを経由します。このホストに一致するルールはありません。",
+    "syntaxTitle": "使用できるパターン",
+    "openFromPicker": "除外リスト",
+    "cellTooltip": "除外リスト ({{count}})",
+    "kinds": {
+      "domain": "ドメインとサブドメイン",
+      "subdomains": "サブドメインのみ",
+      "wildcard": "ワイルドカード",
+      "ip": "IP アドレス",
+      "cidr": "IP 範囲",
+      "local": "ローカルホスト",
+      "loopback": "ループバック",
+      "regex": "正規表現"
+    },
+    "errors": {
+      "empty": "ホスト名、IP アドレス、または範囲を入力してください。",
+      "invalidHost": "「{{rule}}」は有効なホスト名またはパターンではありません。",
+      "invalidPort": "「{{rule}}」のポートが無効です。",
+      "invalidCidr": "「{{rule}}」は有効な IP 範囲ではありません。",
+      "invalidScheme": "「{{rule}}」のスキームが無効です。",
+      "invalidRegex": "「{{rule}}」は有効な正規表現ではありません。"
+    },
+    "syntax": {
+      "domain": "そのドメインとすべてのサブドメイン",
+      "subdomains": "サブドメインのみ。ドメイン自体は含みません",
+      "ip": "特定の IP アドレス 1 つ",
+      "cidr": "その範囲に含まれるすべてのアドレス",
+      "port": "そのホスト。ただしそのポートのみ",
+      "scheme": "そのホスト。ただしそのスキームのみ",
+      "local": "ドットを含まないすべてのホストとループバック",
+      "regex": "ホスト全体に対して照合される正規表現"
+    }
   }
 }

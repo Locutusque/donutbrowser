@@ -30,6 +30,7 @@ import {
   LuMoon,
   LuPlay,
   LuPuzzle,
+  LuShieldOff,
   LuSquare,
   LuTrash2,
   LuTriangleAlert,
@@ -54,11 +55,11 @@ import {
 } from "@/components/cookie-bot-shared";
 import { DeleteConfirmationDialog } from "@/components/delete-confirmation-dialog";
 import {
-  ProfileBypassRulesDialog,
   ProfileDnsBlocklistDialog,
   ProfileInfoDialog,
   ProfileLaunchHookDialog,
 } from "@/components/profile-info-dialog";
+import { ProxyBypassDialog } from "@/components/proxy-bypass-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -254,6 +255,9 @@ interface TableMeta {
   // Traffic snapshots (lightweight real-time data)
   trafficSnapshots: Record<string, TrafficSnapshot>;
   onOpenTrafficDialog?: (profileId: string) => void;
+
+  // Per-profile proxy bypass list, opened from the proxy picker
+  onOpenBypassRules?: (profile: BrowserProfile) => void;
 
   // Sync
   syncStatuses: Record<string, { status: string; error?: string }>;
@@ -959,8 +963,10 @@ const ProxyCellTrigger = React.memo<{
   displayName: string;
   hasAssignment: boolean;
   vpnBadge: string | null;
+  bypassCount: number;
   isDisabled: boolean;
-}>(({ displayName, hasAssignment, vpnBadge, isDisabled }) => {
+}>(({ displayName, hasAssignment, vpnBadge, bypassCount, isDisabled }) => {
+  const { t } = useTranslation();
   const textRef = React.useRef<HTMLSpanElement | null>(null);
   const [isOverflowing, setIsOverflowing] = React.useState(false);
 
@@ -974,11 +980,17 @@ const ProxyCellTrigger = React.memo<{
     >
       <TooltipTrigger asChild>
         <PopoverTrigger asChild>
-          <span
+          {/* A real button, like the Note/Ext/DNS cells: a span with
+              `type="button"` is not focusable, so this picker could not be
+              reached by Tab at all. `disabled` also takes it out of the tab
+              order, which `pointer-events-none` did not. */}
+          <button
+            type="button"
+            disabled={isDisabled}
             className={cn(
-              "flex max-w-full min-w-0 items-center gap-2 rounded px-2 py-1",
+              "flex max-w-full min-w-0 items-center gap-2 rounded border-none bg-transparent px-2 py-1 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
               isDisabled
-                ? "pointer-events-none cursor-not-allowed opacity-60"
+                ? "cursor-not-allowed opacity-60"
                 : "cursor-pointer hover:bg-muted",
             )}
           >
@@ -999,11 +1011,25 @@ const ProxyCellTrigger = React.memo<{
             >
               {displayName}
             </span>
-          </span>
+            {bypassCount > 0 && (
+              <>
+                <LuShieldOff className="size-3 shrink-0 text-muted-foreground" />
+                {/* The icon is the only sign that some traffic skips this
+                    proxy; the tooltip carrying that is visual-only. */}
+                <span className="sr-only">
+                  {t("proxyBypass.cellTooltip", { count: bypassCount })}
+                </span>
+              </>
+            )}
+          </button>
         </PopoverTrigger>
       </TooltipTrigger>
-      {hasAssignment && isOverflowing && (
-        <TooltipContent>{displayName}</TooltipContent>
+      {(bypassCount > 0 || (hasAssignment && isOverflowing)) && (
+        <TooltipContent>
+          {bypassCount > 0
+            ? t("proxyBypass.cellTooltip", { count: bypassCount })
+            : displayName}
+        </TooltipContent>
       )}
     </Tooltip>
   );
@@ -2442,6 +2468,8 @@ export function ProfilesDataTable({
         setTrafficDialogProfile({ id: profileId, name: profile?.name });
       },
 
+      onOpenBypassRules: setBypassRulesProfile,
+
       // Sync
       syncStatuses,
       onOpenProfileSyncDialog,
@@ -3244,6 +3272,7 @@ export function ProfilesDataTable({
               ? effectiveProxy.name
               : meta.t("profiles.table.notSelected");
           const vpnBadge = effectiveVpn ? "WG" : null;
+          const bypassCount = profile.proxy_bypass_rules?.length ?? 0;
           const isSelectorOpen = meta.openProxySelectorFor === profile.id;
           const selectedId = effectiveVpnId ?? effectiveProxyId ?? null;
 
@@ -3281,6 +3310,7 @@ export function ProfilesDataTable({
                   displayName={displayName}
                   hasAssignment={hasAssignment}
                   vpnBadge={vpnBadge}
+                  bypassCount={bypassCount}
                   isDisabled={isDisabled}
                 />
 
@@ -3416,6 +3446,32 @@ export function ProfilesDataTable({
                                 ))}
                             </CommandGroup>
                           )}
+                        <CommandGroup
+                          heading={t("profileTable.exceptionsHeading")}
+                        >
+                          <CommandItem
+                            // Prefixed so a proxy of the same name cannot
+                            // collide, suffixed so search still finds it.
+                            value={`__bypass__ ${t("proxyBypass.openFromPicker")}`}
+                            onSelect={() => {
+                              meta.setOpenProxySelectorFor(null);
+                              meta.onOpenBypassRules?.(profile);
+                            }}
+                          >
+                            <LuShieldOff className="mr-2 size-4" />
+                            <span className="flex-1">
+                              {t("proxyBypass.openFromPicker")}
+                            </span>
+                            {bypassCount > 0 && (
+                              <Badge
+                                variant="secondary"
+                                className="ml-1 px-1.5 py-0 text-[10px] leading-tight"
+                              >
+                                {bypassCount}
+                              </Badge>
+                            )}
+                          </CommandItem>
+                        </CommandGroup>
                       </CommandList>
                     </Command>
                   </PopoverContent>
@@ -4065,12 +4121,13 @@ export function ProfilesDataTable({
           profileName={trafficDialogProfile.name}
         />
       )}
-      <ProfileBypassRulesDialog
+      <ProxyBypassDialog
         isOpen={bypassRulesProfile !== null}
         onClose={() => {
           setBypassRulesProfile(null);
         }}
         profileId={bypassRulesProfile?.id ?? null}
+        profileName={bypassRulesProfile?.name}
         initialRules={bypassRulesProfile?.proxy_bypass_rules ?? []}
       />
       <ProfileDnsBlocklistDialog

@@ -17,6 +17,12 @@ export type BackendErrorCode =
   | "INVALID_PROFILE_ID"
   | "PASSWORD_TOO_SHORT"
   | "INVALID_LAUNCH_HOOK_URL"
+  | "BYPASS_RULE_EMPTY"
+  | "BYPASS_RULE_INVALID_HOST"
+  | "BYPASS_RULE_INVALID_PORT"
+  | "BYPASS_RULE_INVALID_CIDR"
+  | "BYPASS_RULE_INVALID_SCHEME"
+  | "BYPASS_RULE_INVALID_REGEX"
   | "COOKIE_DB_LOCKED"
   | "COOKIE_DB_UNAVAILABLE"
   | "SELF_HOSTED_REQUIRES_LOGOUT"
@@ -203,6 +209,28 @@ export function translateBackendError(t: TFunction, err: unknown): string {
     }
     case "INVALID_LAUNCH_HOOK_URL":
       return t("backendErrors.invalidLaunchHookUrl");
+    case "BYPASS_RULE_EMPTY":
+      return t("backendErrors.bypassRuleEmpty");
+    case "BYPASS_RULE_INVALID_HOST":
+      return t("backendErrors.bypassRuleInvalidHost", {
+        rule: parsed.params?.rule ?? "",
+      });
+    case "BYPASS_RULE_INVALID_PORT":
+      return t("backendErrors.bypassRuleInvalidPort", {
+        rule: parsed.params?.rule ?? "",
+      });
+    case "BYPASS_RULE_INVALID_CIDR":
+      return t("backendErrors.bypassRuleInvalidCidr", {
+        rule: parsed.params?.rule ?? "",
+      });
+    case "BYPASS_RULE_INVALID_SCHEME":
+      return t("backendErrors.bypassRuleInvalidScheme", {
+        rule: parsed.params?.rule ?? "",
+      });
+    case "BYPASS_RULE_INVALID_REGEX":
+      return t("backendErrors.bypassRuleInvalidRegex", {
+        rule: parsed.params?.rule ?? "",
+      });
     case "COOKIE_DB_LOCKED":
       return t("backendErrors.cookieDbLocked");
     case "COOKIE_DB_UNAVAILABLE":

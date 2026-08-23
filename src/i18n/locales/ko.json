@@ -1154,13 +1154,6 @@
       "unknown": "알 수 없음"
     },
     "network": {
-      "bypassRules": "프록시 우회 규칙",
-      "bypassRulesTitle": "프록시 우회 규칙",
-      "bypassRulesDescription": "이 규칙과 일치하는 요청은 프록시를 우회하여 직접 연결됩니다.",
-      "addRule": "규칙 추가",
-      "rulePlaceholder": "예: example.com, 192.168.1.*, .*\\.local",
-      "noRules": "구성된 우회 규칙이 없습니다.",
-      "ruleTypes": "호스트 이름, IP 주소 및 정규식 패턴을 지원합니다.",
       "vpnLabel": "VPN: {{name}}",
       "proxyLabel": "Proxy: {{name}}"
     },
@@ -1726,7 +1719,8 @@
     "tagsHeader": "태그",
     "noteHeader": "메모",
     "vpnsHeading": "VPN",
-    "createByCountryHeading": "국가별 생성"
+    "createByCountryHeading": "국가별 생성",
+    "exceptionsHeading": "예외"
   },
   "dataTableActionBar": {
     "selected": "{{count}}개 선택됨",
@@ -1977,7 +1971,13 @@
     "noE2ePasswordSet": "종단 간 암호화 비밀번호가 설정되지 않았습니다. 암호화된 데이터를 동기화하기 전에 설정하세요.",
     "importSourceNotChromium": "이 폴더는 Chromium 브라우저 프로필이 아닙니다",
     "importSourceNotChromiumNamed": "{{family}} 프로필은 가져올 수 없습니다. Chromium 기반 브라우저만 지원합니다",
-    "importSourceBrowserRunning": "{{browser}}을(를) 먼저 닫거나 그래도 가져오기를 선택하세요"
+    "importSourceBrowserRunning": "{{browser}}을(를) 먼저 닫거나 그래도 가져오기를 선택하세요",
+    "bypassRuleEmpty": "호스트 이름, IP 주소 또는 범위를 입력하세요.",
+    "bypassRuleInvalidHost": "\"{{rule}}\"은(는) 올바른 호스트 이름이나 패턴이 아닙니다.",
+    "bypassRuleInvalidPort": "\"{{rule}}\"의 포트가 올바르지 않습니다.",
+    "bypassRuleInvalidCidr": "\"{{rule}}\"은(는) 올바른 IP 범위가 아닙니다.",
+    "bypassRuleInvalidScheme": "\"{{rule}}\"의 스킴이 올바르지 않습니다.",
+    "bypassRuleInvalidRegex": "\"{{rule}}\"은(는) 올바른 정규식이 아닙니다."
   },
   "rail": {
     "profiles": "프로필",
@@ -2575,5 +2575,52 @@
     "vpnExtensionEntry": " {{version}} — {{capability}}, {{source}}",
     "vpnExtensionEntryNoVersion": " — {{capability}}, {{source}}",
     "scanIncompleteMissing": "이 프로필은 아직 실행된 적이 없어 Donut이 관리하는 확장 프로그램만 확인할 수 있었습니다."
+  },
+  "proxyBypass": {
+    "title": "프록시 예외 목록",
+    "titleForProfile": "프록시 예외 목록 — {{name}}",
+    "description": "이 규칙과 일치하는 요청은 이 프로필의 프록시나 VPN을 거치지 않고 직접 연결됩니다. 도메인만 입력하면 해당 도메인과 모든 하위 도메인이 포함됩니다.",
+    "rulePlaceholder": "example.com, *.internal, 10.0.0.0/8",
+    "ruleInputLabel": "예외 규칙",
+    "addRule": "추가",
+    "noRules": "아직 예외가 없습니다. 모든 요청이 이 프로필의 프록시를 거칩니다.",
+    "willAddCount": "추가할 규칙: {{count}}",
+    "draftMeaning": "{{rule}} — {{meaning}}",
+    "removeRule": "{{rule}} 삭제",
+    "testTitle": "호스트 테스트",
+    "testPlaceholder": "www.example.com",
+    "testDirect": "직접 연결됩니다. 일치한 규칙: {{rule}}",
+    "testProxied": "프록시를 거칩니다. 이 호스트와 일치하는 규칙이 없습니다.",
+    "syntaxTitle": "지원되는 패턴",
+    "openFromPicker": "예외 목록",
+    "cellTooltip": "예외 목록 ({{count}})",
+    "kinds": {
+      "domain": "도메인 및 하위 도메인",
+      "subdomains": "하위 도메인만",
+      "wildcard": "와일드카드",
+      "ip": "IP 주소",
+      "cidr": "IP 범위",
+      "local": "로컬 호스트",
+      "loopback": "루프백",
+      "regex": "정규식"
+    },
+    "errors": {
+      "empty": "호스트 이름, IP 주소 또는 범위를 입력하세요.",
+      "invalidHost": "\"{{rule}}\"은(는) 올바른 호스트 이름이나 패턴이 아닙니다.",
+      "invalidPort": "\"{{rule}}\"의 포트가 올바르지 않습니다.",
+      "invalidCidr": "\"{{rule}}\"은(는) 올바른 IP 범위가 아닙니다.",
+      "invalidScheme": "\"{{rule}}\"의 스킴이 올바르지 않습니다.",
+      "invalidRegex": "\"{{rule}}\"은(는) 올바른 정규식이 아닙니다."
+    },
+    "syntax": {
+      "domain": "해당 도메인과 모든 하위 도메인",
+      "subdomains": "하위 도메인만, 도메인 자체는 제외",
+      "ip": "정확히 하나의 IP 주소",
+      "cidr": "해당 범위에 속하는 모든 주소",
+      "port": "해당 호스트, 단 그 포트에서만",
+      "scheme": "해당 호스트, 단 그 스킴에서만",
+      "local": "점이 없는 모든 호스트와 루프백",
+      "regex": "호스트 전체와 대조되는 정규식"
+    }
   }
 }
