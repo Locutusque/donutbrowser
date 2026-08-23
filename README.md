@@ -46,7 +46,7 @@
 
 | | Apple Silicon | Intel |
 |---|---|---|
-| **DMG** | [Download](https://github.com/zhom/donutbrowser/releases/download/v0.29.5/Donut_0.29.5_aarch64.dmg) | [Download](https://github.com/zhom/donutbrowser/releases/download/v0.29.5/Donut_0.29.5_x64.dmg) |
+| **DMG** | [Download](https://github.com/Locutusque/donutbrowser/releases/latest) | [Download](https://github.com/Locutusque/donutbrowser/releases/latest) |
 
 Or install via Homebrew:
 
@@ -56,15 +56,15 @@ brew install --cask donut
 
 ### Windows
 
-[Download Windows Installer (x64)](https://github.com/zhom/donutbrowser/releases/download/v0.29.5/Donut_0.29.5_x64-setup.exe) · [Portable (x64)](https://github.com/zhom/donutbrowser/releases/download/v0.29.5/Donut_0.29.5_x64-portable.zip)
+[Download Windows Installer (x64)](https://github.com/Locutusque/donutbrowser/releases/latest) · [Portable (x64)](https://github.com/Locutusque/donutbrowser/releases/latest)
 
 ### Linux
 
 | Format | x86_64 | ARM64 |
 |---|---|---|
-| **deb** | [Download](https://github.com/zhom/donutbrowser/releases/download/v0.29.5/Donut_0.29.5_amd64.deb) | [Download](https://github.com/zhom/donutbrowser/releases/download/v0.29.5/Donut_0.29.5_arm64.deb) |
-| **rpm** | [Download](https://github.com/zhom/donutbrowser/releases/download/v0.29.5/Donut-0.29.5-1.x86_64.rpm) | [Download](https://github.com/zhom/donutbrowser/releases/download/v0.29.5/Donut-0.29.5-1.aarch64.rpm) |
-| **AppImage** | [Download](https://github.com/zhom/donutbrowser/releases/download/v0.29.5/Donut_0.29.5_amd64.AppImage) | [Download](https://github.com/zhom/donutbrowser/releases/download/v0.29.5/Donut_0.29.5_aarch64.AppImage) |
+| **deb** | [Download](https://github.com/Locutusque/donutbrowser/releases/latest) | [Download](https://github.com/Locutusque/donutbrowser/releases/latest) |
+| **rpm** | [Download](https://github.com/Locutusque/donutbrowser/releases/latest) | [Download](https://github.com/Locutusque/donutbrowser/releases/latest) |
+| **AppImage** | [Download](https://github.com/Locutusque/donutbrowser/releases/latest) | [Download](https://github.com/Locutusque/donutbrowser/releases/latest) |
 <!-- install-links-end -->
 
 Or install via package manager:

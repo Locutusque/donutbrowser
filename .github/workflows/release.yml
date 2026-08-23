@@ -16,9 +16,24 @@ env:
   TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
   STABLE_RELEASE: "true"
 
+# The `github.repository ==` guards below are deliberately split between two
+# owners, which is not an oversight:
+#
+#   Locutusque/donutbrowser — everything on the build -> publish -> README path
+#     (checks, release, checksums, changelog). These produce this repository's
+#     own installers, and the README download links point at what they publish.
+#
+#   zhom/donutbrowser — notify-discord, deploy-website, docker, update-flake.
+#     These announce a release or deploy on upstream's behalf, against
+#     upstream's webhooks, registry and flake. A fork must not fire them, so
+#     they stay pinned upstream and simply skip here.
+#
+# Anything added to the publish path needs the first guard; anything that
+# reaches an external service on upstream's behalf needs the second.
+
 jobs:
   security-scan:
-    if: github.repository == 'zhom/donutbrowser'
+    if: github.repository == 'Locutusque/donutbrowser'
     name: Security Vulnerability Scan
     uses: "google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@8deb546fdb875b9996d27d4950be7312dac076a1" # v2.5.0
     with:
@@ -34,21 +49,21 @@ jobs:
       actions: read
 
   lint-js:
-    if: github.repository == 'zhom/donutbrowser'
+    if: github.repository == 'Locutusque/donutbrowser'
     name: Lint JavaScript/TypeScript
     uses: ./.github/workflows/lint-js.yml
     permissions:
       contents: read
 
   lint-rust:
-    if: github.repository == 'zhom/donutbrowser'
+    if: github.repository == 'Locutusque/donutbrowser'
     name: Lint Rust
     uses: ./.github/workflows/lint-rs.yml
     permissions:
       contents: read
 
   codeql:
-    if: github.repository == 'zhom/donutbrowser'
+    if: github.repository == 'Locutusque/donutbrowser'
     name: CodeQL
     uses: ./.github/workflows/codeql.yml
     permissions:
@@ -58,14 +73,14 @@ jobs:
       actions: read
 
   spellcheck:
-    if: github.repository == 'zhom/donutbrowser'
+    if: github.repository == 'Locutusque/donutbrowser'
     name: Spell Check
     uses: ./.github/workflows/spellcheck.yml
     permissions:
       contents: read
 
   release:
-    if: github.repository == 'zhom/donutbrowser'
+    if: github.repository == 'Locutusque/donutbrowser'
     needs: [security-scan, lint-js, lint-rust, codeql, spellcheck]
     permissions:
       contents: write
@@ -289,7 +304,7 @@ jobs:
   # sums cover the complete, final asset set. The app self-updater refuses to
   # install a release it cannot verify against this file.
   checksums:
-    if: github.repository == 'zhom/donutbrowser'
+    if: github.repository == 'Locutusque/donutbrowser'
     needs: [release]
     runs-on: ubuntu-latest
     permissions:
@@ -309,7 +324,7 @@ jobs:
           gh release upload "$TAG" SHA256SUMS.txt --clobber --repo "$GITHUB_REPOSITORY"
 
   changelog:
-    if: github.repository == 'zhom/donutbrowser'
+    if: github.repository == 'Locutusque/donutbrowser'
     needs: [release]
     runs-on: ubuntu-latest
     permissions:
@@ -405,7 +420,7 @@ jobs:
           TAG: ${{ github.ref_name }}
         run: |
           VERSION="${TAG#v}"
-          BASE="https://github.com/zhom/donutbrowser/releases/download/${TAG}"
+          BASE="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}"
 
           # Generate the new install section between markers
           cat > /tmp/install-links.md << LINKS
