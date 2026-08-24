@@ -1,6 +1,14 @@
 # Changelog
 
 
+## v0.30.2 (2026-08-24)
+
+### Bug Fixes
+
+- fall back to ad-hoc signing in the nightly release workflow
+- fall back to ad-hoc signing in the release workflows
+
+
 ## v0.29.5 (2026-08-16)
 
 ### Features
